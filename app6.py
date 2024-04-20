@@ -1,12 +1,13 @@
 import panel as pn
 import param
-
+import duckdb
 
 class AppOne(param.Parameterized):
     shared_param = param.Number(default=5, bounds=(0, 10))
+    db = duckdb.connect(database=':memory:')  # Create an in-memory DuckDB database
 
     def view(self):
-        return pn.pane.Markdown(f"# App One\nThe shared value is {self.shared_param}")
+        return pn.pane.Markdown(f"# App One\nThe shared value is {self.shared_param} db id: {id(self.db)}; app id:{id(self)}")
 
 class AppTwo(param.Parameterized):
     shared_param = param.Number(default=5, bounds=(0, 10))
