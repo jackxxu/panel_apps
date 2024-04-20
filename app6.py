@@ -27,7 +27,7 @@ class MainApp(param.Parameterized):
         # Update the shared parameter in the selected app
         self.apps[self.app_selector].shared_param = self.shared_param
 
-    @pn.depends('app_selector')
+    @pn.depends('app_selector', watch=True)
     def view(self):
         return self.apps[self.app_selector].view()
 
@@ -37,14 +37,22 @@ class MainApp(param.Parameterized):
         for app in self.apps.values():
             app.shared_param = self.shared_param
 
-# Create the main Panel application
+    def panel(self):
+        template = pn.template.MaterialTemplate(title="Switchable Panel Apps with Shared Control")
+
+        # Create a panel for the shared parameter and app selector
+        settings_panel = pn.Param(
+            self.param,
+            parameters=['app_selector', 'shared_param'],
+            widgets={'app_selector': {'type': pn.widgets.RadioButtonGroup}}
+        )
+
+        # Add to the MaterialTemplate
+        template.sidebar.append(settings_panel)
+        template.main.append(self.view)  # Here we append the view directly
+
+        return template
+
+# Create the main Panel application and serve it
 main_app = MainApp()
-
-# Create the layout
-layout = pn.Column(
-    pn.Param(main_app.param.app_selector, widgets={'app_selector': {'type': pn.widgets.RadioButtonGroup}}),
-    pn.Param(main_app.param.shared_param),
-    main_app.view
-)
-
-layout.servable(title="Switchable Panel Apps with Shared Control")
+main_app.panel().servable()
