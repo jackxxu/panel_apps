@@ -1,6 +1,5 @@
 import panel as pn
 import param
-import numpy as np
 
 
 class AppOne(param.Parameterized):
@@ -14,7 +13,6 @@ class AppTwo(param.Parameterized):
 
     def view(self):
         return pn.pane.Markdown(f"# App Two\nThe shared value is {self.shared_param}")
-
 
 class MainApp(param.Parameterized):
     app_selector = param.ObjectSelector(default="App One", objects=["App One", "App Two"])
@@ -52,6 +50,7 @@ class MainApp(param.Parameterized):
         template.main.append(self.view)  # Here we append the view directly
 
         return template
+
 
 # Create the main Panel application and serve it
 main_app = MainApp()
