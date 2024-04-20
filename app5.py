@@ -23,22 +23,28 @@ class MainApp(param.Parameterized):
     app_selector = param.ObjectSelector(default="App One", objects=["App One", "App Two"])
     apps = {'App One': AppOne(), 'App Two': AppTwo()}
 
-    @pn.depends('app_selector', watch=True)
-    def _update_app(self):
-        # This method could be used to perform additional logic when switching apps
-        pass
+    def __init__(self, **params):
+        super(MainApp, self).__init__(**params)
+        self.template = pn.template.MaterialTemplate(title='Switchable Panel Apps')
+        self.setup_template()
+
+    def setup_template(self):
+        # Setup the sidebar with the app selector
+        app_selector_widget = pn.Param(
+            self.param.app_selector,
+            widgets={'app_selector': {'type': pn.widgets.RadioButtonGroup}}
+        )
+
+        # Add sidebar and main area components
+        self.template.sidebar.append(app_selector_widget)
+        self.template.main.append(pn.Row(self.view))
 
     @pn.depends('app_selector')
     def view(self):
         return self.apps[self.app_selector].view()
 
-# Create the main Panel application
+# Create the main application instance
 main_app = MainApp()
 
-# Create the layout
-layout = pn.Column(
-    pn.Param(main_app.param.app_selector, widgets={'app_selector': {'type': pn.widgets.RadioButtonGroup}}),
-    main_app.view
-)
-
-layout.servable(title="Switchable Panel Apps")
+# Serve the application
+main_app.template.servable()
