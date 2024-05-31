@@ -1,5 +1,6 @@
 panel==1.4.1
 param==2.1.0
 bokeh==3.4.1
+duckdb==0.10.3
 ipdb
 watchfiles
