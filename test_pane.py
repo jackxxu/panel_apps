@@ -14,8 +14,6 @@ pn.extension("plotly", "vega")
 # print(component)
 # component.servable()
 
-
-
 data = pd.DataFrame([
     ('Monday', 7), ('Tuesday', 4), ('Wednesday', 9), ('Thursday', 4),
     ('Friday', 4), ('Saturday', 5), ('Sunday', 4)], columns=['Day', 'Wind Speed (m/s)']
@@ -35,4 +33,7 @@ fig = (
 component = pn.panel(fig, sizing_mode="stretch_width", height=400)
 print(component)
 
-component.servable()
+pn.Column(
+    component, 
+    pn.panel(data)
+).servable()
