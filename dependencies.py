@@ -45,8 +45,9 @@ class D(param.Parameterized):
     def cb4(self):
         print(f"cb4 x={self.x} i={self.i}")
 
+    @param.depends('x', watch=True)
     def cb5(self):
-        print(f"cb4 x={self.x} i={self.i}")
+        print(f"cb4 x={self.x} ")
 
 d = D()
 d
@@ -61,4 +62,7 @@ c.param.continent.__slots__
 # %%
 
 d.param.method_dependencies('cb1')
+# %%
+d.param.method_dependencies('cb5')
+
 # %%
