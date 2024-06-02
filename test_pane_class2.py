@@ -2,8 +2,8 @@ import panel as pn
 import pandas as pd
 import altair as alt
 import param
-import random 
 
+pn.extension("plotly", "vega")
 
 data = pd.DataFrame([
     ('Monday', 7), ('Tuesday', 4), ('Wednesday', 9), ('Thursday', 4),
@@ -12,15 +12,12 @@ data = pd.DataFrame([
 
 class Plot(param.Parameterized):
     slider = param.Integer(default=7, bounds=(1, 7))
+    slider2 = param.Integer(default=7, bounds=(1, 7))
 
     def data_plot(self):
-        print('1'*100)
-
-        # generate a random integer between 1 and 7
-        random_integer = random.randint(1, 7)
-
+        print('in data_plot')
         fig = (
-            alt.Chart(data.head(random_integer))
+            alt.Chart(data.head(self.slider))
             .mark_line(point=True)
             .encode(
                 x="Day",
@@ -29,14 +26,15 @@ class Plot(param.Parameterized):
             )
             .properties(width="container", height="container", title="Wind Speed Over the Week")
         )
-
-        return pn.panel(fig, sizing_mode="stretch_width", height=400)
+        return fig
 
     def view(self): 
+        print('in view  ')
         return pn.Column(
-            self.param.slider, 
-            self.data_plot, # self.data_plot()
+            self.param.slider,
+            self.param.slider2,
+            self.data_plot
         )
     
-
-Plot().view().servable()
+plot = Plot()
+plot.view().servable()
