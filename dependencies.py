@@ -49,6 +49,13 @@ class D(param.Parameterized):
     def cb5(self):
         print(f"cb4 x={self.x} ")
 
+    def cb6(self):
+        print(f"cb4 x={self.x} ")
+
+    @param.depends('n', watch=True)
+    def cb7(self):
+        print(f"cb4 x={self.x} ")
+
 d = D()
 d
 import panel as pn
@@ -63,6 +70,27 @@ c.param.continent.__slots__
 
 d.param.method_dependencies('cb1')
 # %%
-d.param.method_dependencies('cb5')
+dependencies = d.param.method_dependencies('cb5')
+[f"{o.inst.name}.{o.pobj.name}:{o.what}" for o in dependencies]
+
+# %%
+dependencies = d.param.method_dependencies('cb6')
+[f"{o.inst.name}.{o.pobj.name}:{o.what}" for o in dependencies]
+
+# %%
+class Mul(param.Parameterized):
+    a = param.Number(5,  bounds=(-100, 100))
+    b = param.Number(-2, bounds=(-100, 100))
+
+    @param.depends('a', 'b')
+    def view(self):
+        return str(self.a*self.b)
+
+    def view2(self):
+        return str(self.a*self.b)
+
+prod = Mul(name='Multiplier')
+
+pn.Row(prod.param, prod.view2)
 
 # %%
