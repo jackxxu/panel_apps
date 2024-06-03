@@ -52,10 +52,6 @@ class D(param.Parameterized):
     def cb6(self):
         print(f"cb4 x={self.x} ")
 
-    @param.depends('n', watch=True)
-    def cb7(self):
-        print(f"cb4 x={self.x} ")
-
 d = D()
 d
 import panel as pn
@@ -94,3 +90,43 @@ prod = Mul(name='Multiplier')
 pn.Row(prod.param, prod.view2)
 
 # %%
+@param.depends(c.param.country, d.param.i, watch=True)
+def g(country, i):
+    print(f"g country={country} i={i}")
+
+c.country = 'Greece'
+# %%
+
+d.i = 6
+
+# %%
+g('USA', 7)
+
+# %%
+
+def e(e):
+    return f"(event: {e.name} changed from {e.old} to {e.new})"
+
+class P(param.Parameterized):
+    a = param.Integer(default=0)
+    b = param.Integer(default=0)
+    
+    def __init__(self, **params):
+        super().__init__(**params)
+        self.param.watch(self.run_a1, ['a'], queued=True, precedence=2)
+        self.param.watch(self.run_a2, ['a'], precedence=1)
+        self.param.watch(self.run_b,  ['b'])
+
+    def run_a1(self, event):
+        self.b += 1
+        print('a1', self.a, e(event))
+
+    def run_a2(self, event):
+        print('a2', self.a, e(event))
+
+    def run_b(self, event):
+        print('b', self.b, e(event))
+        
+p = P()
+
+p.a = 1
