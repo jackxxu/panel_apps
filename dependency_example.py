@@ -6,19 +6,21 @@ import time
 class DateRangeSelector(param.Parameterized):
     selector = param.Selector(objects=['Option 1', 'Option 2'], default='Option 1')
     date_range = param.DateRange()
+    view_refresh = param.Event()
 
     value_dependence = {
         'Option 1':  (date.today() - timedelta(days=7), date.today()),
-        'Option 2':  (date.today() - timedelta(days=30), date.today()),
+        'Option 2':  (date.today() - timedelta(days=7), date.today()),
     }
 
     @param.depends('selector', watch=True, on_init=True)
     def update_date_range(self):
-        time.sleep(2)
-        with param.parameterized.discard_events(self):
+        if self.date_range == self.value_dependence[self.selector]:
+            self.param.trigger('date_range')
+        else: 
             self.date_range = self.value_dependence[self.selector]
 
-    @param.depends('selector', 'date_range')
+    @param.depends('date_range')
     def view(self):
         print('v'*100)
         return pn.pane.Markdown(f"""
