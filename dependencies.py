@@ -130,3 +130,4 @@ class P(param.Parameterized):
 p = P()
 
 p.a = 1
+# %%
