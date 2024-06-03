@@ -1,6 +1,7 @@
 import param
 import panel as pn
 from datetime import date, timedelta
+import time
 
 class DateRangeSelector(param.Parameterized):
     selector = param.Selector(objects=['Option 1', 'Option 2'], default='Option 1')
@@ -13,7 +14,9 @@ class DateRangeSelector(param.Parameterized):
 
     @param.depends('selector', watch=True, on_init=True)
     def update_date_range(self):
-        self.date_range = self.value_dependence[self.selector]
+        time.sleep(2)
+        with param.parameterized.discard_events(self):
+            self.date_range = self.value_dependence[self.selector]
 
     @param.depends('selector', 'date_range')
     def view(self):
