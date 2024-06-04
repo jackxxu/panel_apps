@@ -2,6 +2,8 @@ import hvplot.pandas
 import numpy as np
 import pandas as pd
 import panel as pn
+import time
+
 
 PRIMARY_COLOR = "#0072B5"
 SECONDARY_COLOR = "#B54300"
@@ -21,6 +23,7 @@ data = get_data()
 data.tail()
 
 def transform_data(variable, window, sigma):
+    time.sleep(2)
     """Calculates the rolling average and identifies outliers"""
     avg = data[variable].rolling(window=window).mean()
     residual = data[variable] - avg
